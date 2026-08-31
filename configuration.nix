@@ -61,15 +61,15 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  services.pulseaudio.enable = true;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
-    enable = false;
+    enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
     # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
+    jack.enable = true;
 
     # Use the WirePlumber session manager
     #wireplumber.enable = true;
@@ -82,7 +82,7 @@
   users.users."harry" = {
     isNormalUser = true;
     description = "Harry Esses";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "audio" ];
     packages = with pkgs; [
     #  thunderbird
     ];
@@ -102,6 +102,7 @@
     pkgs.talosctl
     pkgs.fluxcd
     pkgs.git
+    pkgs.pulseaudio
   ];
 
   # Install firefox.
