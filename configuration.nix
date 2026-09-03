@@ -2,12 +2,13 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./zen.nix
 #      ./home.nix
     ];
 
@@ -70,6 +71,17 @@
     pulse.enable = true;
     # If you want to use JACK applications, uncomment this
     jack.enable = true;
+    extraConfig.pipewire."99-input-denoise" = {
+       "context.modules" = [
+         {
+           name = "libpipewire-module-adapter";
+           args = {
+             "factory.name" = "support.null-audio-sink";
+             "node.name" = "Split-Outputs";
+           };
+         }
+       ];
+     };
 
     # Use the WirePlumber session manager
     #wireplumber.enable = true;
@@ -103,6 +115,7 @@
     pkgs.fluxcd
     pkgs.git
     pkgs.pulseaudio
+    inputs.self.packages.${pkgs.system}.hello 
   ];
 
   # Install firefox.
