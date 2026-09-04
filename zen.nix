@@ -11,6 +11,7 @@ let
     value = {
       install_url = "https://addons.mozilla.org/en-US/firefox/downloads/latest/${shortId}/latest.xpi";
       installation_mode = "normal_installed";
+      default_area = "navbar";
     };
   };
 
@@ -18,6 +19,8 @@ let
     # Check these out at about:config
     "extensions.autoDisableScopes" = 0;
     "extensions.pocket.enabled" = false;
+    "DisplayMenueBar" = "always";
+    "PasswordManagerEnabled" = false;
     # ...
   };
 
@@ -26,6 +29,7 @@ let
     # the short ID in the url (like https://addons.mozilla.org/en-US/firefox/addon/!SHORT_ID!/)
     # Then go to https://addons.mozilla.org/api/v5/addons/addon/!SHORT_ID!/ to get the guid
     (extension "ublock-origin" "uBlock0@raymondhill.net")
+    (extension "bitwarden-password-manager" "{446900e4-71c2-419f-a6a7-df9c091e268b}")
     # ...
   ];
 
@@ -43,6 +47,8 @@ in
 
         extraPolicies = {
           DisableTelemetry = true;
+          DisplayMenuBar = "always";
+          PasswordManagerEnabled = false;
           ExtensionSettings = builtins.listToAttrs extensions;
 
           SearchEngines = {

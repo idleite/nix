@@ -9,7 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./zen.nix
-#      ./home.nix
+     ./home.nix
     ];
 
   # Use the GRUB 2 boot loader.
@@ -71,20 +71,13 @@
     pulse.enable = true;
     # If you want to use JACK applications, uncomment this
     jack.enable = true;
-    extraConfig.pipewire."99-input-denoise" = {
-       "context.modules" = [
-         {
-           name = "libpipewire-module-adapter";
-           args = {
-             "factory.name" = "support.null-audio-sink";
-             "node.name" = "Split-Outputs";
-           };
-         }
-       ];
-     };
+ # 1. Override the hardware profile map to explicitly treat the card as a 4-channel output split
+ 
+
+
 
     # Use the WirePlumber session manager
-    #wireplumber.enable = true;
+    wireplumber.enable = true;
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -100,7 +93,7 @@
     ];
   };
   environment.systemPackages = [
-    pkgs.pulsemeeter
+#    pkgs.pulsemeeter
     pkgs.spotify
     pkgs.spotifyd
     pkgs.tmux
@@ -114,10 +107,20 @@
     pkgs.talosctl
     pkgs.fluxcd
     pkgs.git
-    pkgs.pulseaudio
-    inputs.self.packages.${pkgs.system}.hello 
-  ];
+#    pkgs.pulseaudio
+    inputs.self.packages.${pkgs.system}.hello
+    pkgs.pavucontrol 
+    pkgs.alsa-utils
+#    pkgs.qpwgraph
+    pkgs.pamixer
+    pkgs.bluez
+    pkgs.bluez-tools
 
+  ];
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
   # Install firefox.
   programs.firefox.enable = true;
 

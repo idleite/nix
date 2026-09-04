@@ -2,7 +2,10 @@
   description = "A very basic flake";
 
   inputs = {
-    zen.url = "path:zen";
+    zen-browser = {
+      url = "github:youwen5/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixpkgs.url = "github:nixos/nixpkgs?ref=release-26.05";
   };
 
