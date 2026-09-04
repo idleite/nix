@@ -1,21 +1,22 @@
-{ config, pkgs, lib, ... }:
+{ pkgs, ... }: {
+  home.username = "harry";
+  home.homeDirectory = "/home/harry";
 
-let
-  home-manager = builtins.fetchTarball https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz;
-in
-{
-  imports =
-    [
-      (import "${home-manager}/nixos")
-    ];
+  # Do not change this value even if you update Home Manager versions
+  home.stateVersion = "25.05"; 
 
-  users.users.eve.isNormalUser = true;
-  home-manager.users.eve = { pkgs, ... }: {
-    home.packages = [ pkgs.atool pkgs.httpie ];
-    programs.bash.enable = true;
+  # Packages to install for this user
+  home.packages = with pkgs; [
+    git
+    htop
+  ];
 
-    # The state version is required and should stay at the version you
-    # originally installed.
-    home.stateVersion = "26.05";
+  # Let Home Manager install and manage itself
+  programs.home-manager.enable = true;
+
+  programs.git.settings = {
+    enable = true;
+    userName = "Harry Esses";
+    userEmail = "harryessesdev@harryesses.com";
   };
 }
