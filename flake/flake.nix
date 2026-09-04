@@ -2,10 +2,14 @@
   description = "A very basic flake";
 
   inputs = {
-    zen-browser = {
-      url = "github:youwen5/zen-browser-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
+  zen-browser = {
+    url = "github:0xc000022070/zen-browser-flake";
+    inputs = {
+      # IMPORTANT: To ensure compatibility with the latest Firefox version, use nixpkgs-unstable.
+      nixpkgs.follows = "nixpkgs";
+      home-manager.follows = "home-manager";
     };
+  };
     nixpkgs.url = "github:nixos/nixpkgs?ref=release-26.05";
 
     home-manager = {
@@ -26,9 +30,9 @@
       modules = [
 	      ../hardware-configuration.nix
         ../configuration.nix
-        ../zen.nix
-        inputs.home-manager.nixosModules.home-manager
-        {
+        # ../zen.nix
+        inputs.home-manager.nixosModules.home-manager {
+          home-manager.extraSpecialArgs = { inherit inputs; };
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.users.harry = import ../home.nix;
