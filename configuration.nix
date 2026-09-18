@@ -51,13 +51,20 @@
   # Enable the GNOME Desktop Environment.
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
-
+  # and only be left with GNOME shell.
+  services.gnome.core-apps.enable = false;
+  services.gnome.core-developer-tools.enable = false;
+  services.gnome.games.enable = false;
+  environment.gnome.excludePackages = with pkgs; [ gnome-tour gnome-user-docs ];
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
     variant = "";
   };
-
+  systemd.targets.sleep.enable = false;
+  systemd.targets.suspend.enable = false;
+  systemd.targets.hibernate.enable = false;
+  systemd.targets.hybrid-sleep.enable = false;
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
@@ -79,23 +86,29 @@
     # Use the WirePlumber session manager
     wireplumber.enable = true;
   };
-
+  hardware.alsa.enablePersistence = true;
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+security.tpm2.enable = true;
+security.tpm2.pkcs11.enable = true;  # expose /run/current-system/sw/lib/libtpm2_pkcs11.so
+security.tpm2.tctiEnvironment.enable = true;  # TPM2TOOLS_TCTI and TPM2_PKCS11_TCTI env variables
+boot.kernelModules = [ "uhid" ];  # Define a user account. Don't forget to set a password with ‘passwd’.
+  users.groups.tpm_uhid = {};
   users.users."harry" = {
     isNormalUser = true;
     description = "Harry Esses";
-    extraGroups = [ "networkmanager" "wheel" "audio" ];
+    extraGroups = [ "networkmanager" "wheel" "audio" "tss" "tpm_uhid"];
     packages = with pkgs; [
     #  thunderbird
     ];
   };
+    services.udev.extraRules = ''
+    KERNEL=="uhid", SUBSYSTEM=="misc", GROUP="tpm_uhid", MODE="0660"
+  '';
   environment.systemPackages = [
-#    pkgs.pulsemeeter
+   pkgs.pulsemeeter
     pkgs.spotify
-    pkgs.spotifyd
+    # pkgs.spotifyd
     pkgs.tmux
     pkgs.bitwarden-desktop
     pkgs.discord
@@ -107,22 +120,37 @@
     pkgs.talosctl
     pkgs.fluxcd
     pkgs.git
-#    pkgs.pulseaudio
-    inputs.self.packages.${pkgs.system}.hello
+   pkgs.pulseaudio
+    inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.hello
     pkgs.pavucontrol 
     pkgs.alsa-utils
 #    pkgs.qpwgraph
     pkgs.pamixer
     pkgs.bluez
     pkgs.bluez-tools
+    pkgs.gnome-terminal
+    pkgs.heroic
+    pkgs.steam
+    pkgs.tpm-fido
+    pkgs.pinentry-all
+    pkgs.vault
+    pkgs.git-credential-manager
+    pkgs.terraform
+    pkgs.coder
+    pkgs.kubernetes-helm
+    pkgs.headlamp
+    inputs.prismlauncher.packages.${pkgs.system}.prismlauncher
+    pkgs.nautilus
+    pkgs.openshot-qt
+    pkgs.twinkle  
+    ];
 
-  ];
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
   };
   # Install firefox.
-  programs.firefox.enable = true;
+  programs.firefox.enable = false;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -152,7 +180,8 @@
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
-
+  networking.firewall.allowedUDPPorts = [ 5353 ];
+  networking.firewall.allowedTCPPorts = [ 57621 ];
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
   # accidentally delete configuration.nix.
