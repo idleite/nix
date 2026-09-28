@@ -2,6 +2,7 @@
   imports = [
     inputs.zen-browser.homeModules.beta
     ./apps/zen.nix
+    ./apps/k9s.nix
   ];
   home.username = "harry";
   home.homeDirectory = "/home/harry";

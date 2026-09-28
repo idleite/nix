@@ -19,54 +19,66 @@
         {
           default = pkgs.rustPlatform.buildRustPackage rec {
             pname = "linuxmeeter";
-            version = "main"; # Or replace with a specific tag
+            version = "main";
 
             src = pkgs.fetchFromGitHub {
               owner = "dslapelis";
               repo = "linuxmeeter";
               rev = "main"; 
-              # 1. Nix will complain about this hash on your first run.
-              hash = pkgs.lib.fakeHash; 
+              hash = "sha256-EWb8MGcQfyysXcQUiF32won4a5b8+OVLWylmdyMRTD0="; 
             };
 
-            # 3. Update this hash third.
-            cargoHash = pkgs.lib.fakeHash;
+            cargoHash = "sha256-psLXl/PrgLnKJ6dyVjE4fZorEUhu/YBpm2jCdLa4szU=";
 
-            # Fetch frontend pnpm dependencies offline
-            pnpmDeps = pkgs.fetchpnpmDeps {
+            pnpmDeps = pkgs.fetchPnpmDeps {
+              fetcherVersion = 4;
               inherit pname version src;
-              # 2. Update this hash second.
-              hash = pkgs.lib.fakeHash;
+              hash = "sha256-Vg7kJ+kzLVQtgrB0FTelE1ed2p0Xbd0wmTi0CHpSeig=";
             };
 
             nativeBuildInputs = with pkgs; [
+              pnpm
               pkg-config
-              wrapGAppsHook3       # Ensures GTK/Glib environments are set up
-              rustPlatform.bindgenHook # Often needed for PipeWire C-bindings
+              wrapGAppsHook3
+              rustPlatform.bindgenHook
               nodejs
-              pnpm.configHook      # Prepares node_modules dynamically
+              pnpmConfigHook
               cargo-tauri
             ];
 
             buildInputs = with pkgs; [
               glib
               gtk3
-              webkit2gtk_4_1
+              webkitgtk_4_1
               libayatana-appindicator
               pipewire
               lsp-plugins
             ];
 
-            # Build the frontend assets before cargo compiles the Rust backend
             preBuild = ''
-              echo "Building frontend..."
+              echo "Building frontend assets..."
               pnpm build
             '';
 
-            # Ensure the LV2 plugins are available to PipeWire at runtime
+            buildPhase = ''
+              runHook preBuild
+              echo "Building Tauri application..."
+              cargo-tauri build --no-bundle --target ${pkgs.stdenv.hostPlatform.rust.rustcTarget}
+              runHook postBuild
+            '';
+
+            installPhase = ''
+              runHook preInstall
+              mkdir -p $out/bin
+              cp target/${pkgs.stdenv.hostPlatform.rust.rustcTarget}/release/linuxmeeter $out/bin/
+              runHook postInstall
+            '';
+
             preFixup = ''
               gappsWrapperArgs+=(
                 --prefix LV2_PATH : "${pkgs.lsp-plugins}/lib/lv2"
+                --prefix LD_LIBRARY_PATH : "${pkgs.lib.makeLibraryPath [ pkgs.libayatana-appindicator ]}"
+                --set WEBKIT_DISABLE_DMABUF_RENDERER "1"
               )
             '';
 
@@ -80,7 +92,6 @@
           };
         });
 
-      # Provides a shell if you just want to develop/build it locally using `nix develop`
       devShells = forAllSystems (system:
         let
           pkgs = nixpkgsFor.${system};
@@ -100,14 +111,14 @@
             buildInputs = with pkgs; [
               gtk3
               glib
-              webkit2gtk_4_1
+              webkitgtk_4_1
               libayatana-appindicator
               pipewire
               lsp-plugins
             ];
 
             shellHook = ''
-              export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath (with pkgs; [ pipewire gtk3 webkit2gtk_4_1 libayatana-appindicator ])}:$LD_LIBRARY_PATH
+              export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath (with pkgs; [ pipewire gtk3 webkitgtk_4_1 libayatana-appindicator ])}:$LD_LIBRARY_PATH
               export LV2_PATH="${pkgs.lsp-plugins}/lib/lv2"
             '';
           };

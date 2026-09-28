@@ -87,6 +87,42 @@
     wireplumber.enable = true;
   };
   hardware.alsa.enablePersistence = true;
+services.pipewire.wireplumber.extraConfig."50-app-routing" = {
+  "wireplumber.settings" = {
+    # Keeps custom application routes saved permanently across restarts
+    "state.restore-props" = true;
+  };
+  "node.rules" = [
+    {
+      matches = [
+        {
+          # Match by the application's binary or process name
+          "app.name" = "spotify"; 
+        }
+      ];
+      actions = {
+        update-props = {
+          # Force WirePlumber to send this app to your chosen output
+          "target.node" = "alsa_output.usb-Generic_Blue_Microphones_2113BAB0P0A8-00.analog-stereo";
+        };
+      };
+    }
+        {
+      matches = [
+        {
+          # Match by the application's binary or process name
+          "app.name" = "spotifyd"; 
+        }
+      ];
+      actions = {
+        update-props = {
+          # Force WirePlumber to send this app to your chosen output
+          "target.node" = "alsa_output.pci-0000_08_00.4.analog-stereo";
+        };
+      };
+    }
+  ];
+};
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
 security.tpm2.enable = true;
@@ -124,7 +160,7 @@ boot.kernelModules = [ "uhid" ];  # Define a user account. Don't forget to set a
     inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.hello
     pkgs.pavucontrol 
     pkgs.alsa-utils
-#    pkgs.qpwgraph
+   pkgs.qpwgraph
     pkgs.pamixer
     pkgs.bluez
     pkgs.bluez-tools
@@ -142,7 +178,9 @@ boot.kernelModules = [ "uhid" ];  # Define a user account. Don't forget to set a
     inputs.prismlauncher.packages.${pkgs.system}.prismlauncher
     pkgs.nautilus
     pkgs.openshot-qt
-    pkgs.twinkle  
+    pkgs.karere
+    pkgs.twinkle
+    pkgs.k9s
     ];
 
   hardware.bluetooth = {
