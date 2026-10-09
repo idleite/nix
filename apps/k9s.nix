@@ -161,7 +161,7 @@
     description = "Flux reconcile";
     command = "sh";
     background = false;
-    args = [home.nix
+    args = [
       "-c"
       ''
         flux reconcile image update --context $CONTEXT -n $NAMESPACE $NAME | less -K
@@ -317,7 +317,7 @@
       ''
     ];
   };
-}
+};
   };
 
 }

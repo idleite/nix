@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./desktop.nix
       # ./zen.nix
     #  ./home.nix
     ];
@@ -48,14 +49,45 @@
     LC_TIME = "en_US.UTF-8";
   };
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  # Enable the GNOME Desktop Environment.
-  services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
-  # and only be left with GNOME shell.
-  services.gnome.core-apps.enable = false;
-  services.gnome.core-developer-tools.enable = false;
-  services.gnome.games.enable = false;
-  environment.gnome.excludePackages = with pkgs; [ gnome-tour gnome-user-docs ];
+  # # Enable the KDE Desktop Environment
+  # services = {
+  #   desktopManager.plasma6.enable = true;
+  #   displayManager.sddm.enable = true;
+  #   displayManager.sddm.wayland.enable = true;
+  # };
+
+  # environment.systemPackages = with pkgs; [
+  #   # KDE Utilities
+  #   kdePackages.discover # Optional: Software center for Flatpaks/firmware updates
+  #   kdePackages.kcalc # Calculator
+  #   kdePackages.kcharselect # Character map
+  #   kdePackages.kclock # Clock app
+  #   kdePackages.kcolorchooser # Color picker
+  #   kdePackages.kolourpaint # Simple paint program
+  #   kdePackages.ksystemlog # System log viewer
+  #   kdePackages.sddm-kcm # SDDM configuration module
+  #   kdiff3 # File/directory comparison tool
+
+  #   # Hardware/System Utilities (Optional)
+  #   kdePackages.isoimagewriter # Write hybrid ISOs to USB
+  #   kdePackages.partitionmanager # Disk and partition management
+  #   hardinfo2 # System benchmarks and hardware info
+  #   wayland-utils # Wayland diagnostic tools
+  #   wl-clipboard # Wayland copy/paste support
+  #   vlc # Media player
+  # ];
+  # # Enable the GNOME Desktop Environment.
+  # # services.displayManager.gdm.enable = true;
+  # # services.desktopManager.gnome.enable = true;
+  # # # and only be left with GNOME shell.
+  # # services.gnome.core-apps.enable = false;
+  # # services.gnome.core-developer-tools.enable = false;
+  # # services.gnome.games.enable = false;
+  # # environment.gnome.excludePackages = with pkgs; [ gnome-tour gnome-user-docs ];
+  # # environment.systemPackages = [
+  # #   pkgs.gnome-terminal
+  # #   pkgs.nautilus
+  # # ];
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -125,10 +157,10 @@ services.pipewire.wireplumber.extraConfig."50-app-routing" = {
 };
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
-security.tpm2.enable = true;
-security.tpm2.pkcs11.enable = true;  # expose /run/current-system/sw/lib/libtpm2_pkcs11.so
-security.tpm2.tctiEnvironment.enable = true;  # TPM2TOOLS_TCTI and TPM2_PKCS11_TCTI env variables
-boot.kernelModules = [ "uhid" ];  # Define a user account. Don't forget to set a password with ‘passwd’.
+  security.tpm2.enable = true;
+  security.tpm2.pkcs11.enable = true;  # expose /run/current-system/sw/lib/libtpm2_pkcs11.so
+  security.tpm2.tctiEnvironment.enable = true;  # TPM2TOOLS_TCTI and TPM2_PKCS11_TCTI env variables
+  boot.kernelModules = [ "uhid" ];  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.groups.tpm_uhid = {};
   users.users."harry" = {
     isNormalUser = true;
@@ -164,7 +196,6 @@ boot.kernelModules = [ "uhid" ];  # Define a user account. Don't forget to set a
     pkgs.pamixer
     pkgs.bluez
     pkgs.bluez-tools
-    pkgs.gnome-terminal
     pkgs.heroic
     pkgs.steam
     pkgs.tpm-fido
@@ -176,13 +207,17 @@ boot.kernelModules = [ "uhid" ];  # Define a user account. Don't forget to set a
     pkgs.kubernetes-helm
     pkgs.headlamp
     inputs.prismlauncher.packages.${pkgs.system}.prismlauncher
-    pkgs.nautilus
     pkgs.openshot-qt
     pkgs.karere
     pkgs.twinkle
     pkgs.k9s
+    pkgs.xclicker
+    # pkgs.tailscale
     ];
-
+  services.tailscale = {
+    # Enable tailscale at startup
+    enable = true;
+  };
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
