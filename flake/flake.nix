@@ -10,19 +10,24 @@
       #
       # inputs.nixpkgs.follows = "nixpkgs";
     };
-  zen-browser = {
-    url = "github:0xc000022070/zen-browser-flake";
-    inputs = {
-      # IMPORTANT: To ensure compatibility with the latest Firefox version, use nixpkgs-unstable.
-      nixpkgs.follows = "nixpkgs";
-      home-manager.follows = "home-manager";
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs = {
+        # IMPORTANT: To ensure compatibility with the latest Firefox version, use nixpkgs-unstable.
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+      };
     };
-  };
     nixpkgs.url = "github:nixos/nixpkgs?ref=release-26.05";
 
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    plasma-manager = {
+      url = "github:nix-community/plasma-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
     };
   };
 
@@ -43,6 +48,7 @@
           home-manager.extraSpecialArgs = { inherit inputs; };
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
+          home-manager.sharedModules = [ inputs.plasma-manager.homeModules.plasma-manager ];
           home-manager.users.harry = import ../home.nix;
         }
       ];
