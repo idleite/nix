@@ -4,6 +4,7 @@
     ./apps/zen.nix
     ./apps/k9s.nix
     ./apps/plasma-manager.nix
+    ./apps/toggle-port.nix
   ];
   home.username = "harry";
   home.homeDirectory = "/home/harry";

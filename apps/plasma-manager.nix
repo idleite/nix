@@ -4,11 +4,15 @@
 
   programs.plasma = {
     enable = true;
-
+    session = {
+      general.askForConfirmationOnLogout = false;
+      sessionRestore.restoreOpenApplicationsOnLogin = "startWithEmptySession";
+    };
     #
     # Some high-level settings:
     #
     workspace = {
+      enableMiddleClickPaste = true;
       clickItemTo = "open"; # If you liked the click-to-open default from plasma 5
       lookAndFeel = "org.kde.breezedark.desktop";
       cursor = {
@@ -19,12 +23,18 @@
       wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/Patak/contents/images/1080x1920.png";
     };
 
-    hotkeys.commands."launch-konsole" = {
-      name = "Launch Konsole";
-      key = "Meta+Alt+K";
-      command = "konsole";
+    hotkeys.commands = {
+      "launch-konsole" = {
+        name = "Launch Konsole";
+        key = "Meta+Alt+K";
+        command = "konsole";
+      };
+      "change-audio" = {
+        name = "Change Audio Port";
+        key = "Meta+X";
+        command = "toggle-port";
+      };
     };
-
     fonts = {
       general = {
         family = "JetBrains Mono";
@@ -69,12 +79,12 @@
           # Or you can configure the widgets by adding the widget-specific options for it.
           # See modules/widgets for supported widgets and options for these widgets.
           # For example:
-          {
-            kickoff = {
-              sortAlphabetically = true;
-              icon = "nix-snowflake-white";
-            };
-          }
+          # {
+          #   kickoff = {
+          #     sortAlphabetically = true;
+          #     icon = "nix-snowflake-white";
+          #   };
+          # }
           # Adding configuration to the widgets can also for example be used to
           # pin apps to the task-manager, which this example illustrates by
           # pinning dolphin and konsole to the task-manager by default with widget-specific options.
@@ -83,21 +93,25 @@
               launchers = [
                 "applications:org.kde.dolphin.desktop"
                 "applications:org.kde.konsole.desktop"
+                "applications:zen-beta.desktop"
+                "applications:code.desktop"
+                "applications:discord.desktop"
+                "applications:spotify.desktop"
               ];
             };
           }
           # Or you can do it manually, for example:
-          {
-            name = "org.kde.plasma.icontasks";
-            config = {
-              General = {
-                launchers = [
-                  "applications:org.kde.dolphin.desktop"
-                  "applications:org.kde.konsole.desktop"
-                ];
-              };
-            };
-          }
+          # {
+          #   name = "org.kde.plasma.icontasks";
+          #   config = {
+          #     General = {
+          #       launchers = [
+          #         "applications:org.kde.dolphin.desktop"
+          #         "applications:org.kde.konsole.desktop"
+          #       ];
+          #     };
+          #   };
+          # }
           # If no configuration is needed, specifying only the name of the
           # widget will add them with the default configuration.
           "org.kde.plasma.marginsseparator"
@@ -130,7 +144,8 @@
             };
           }
         ];
-        hiding = "autohide";
+        # hiding = "autohide";
+        screen = "all";
       }
       # Application name, Global menu and Song information and playback controls at the top
       {
@@ -216,10 +231,10 @@
           window-types = [ "normal" ];
         };
         apply = {
-          noborder = {
-            value = true;
-            apply = "force";
-          };
+          # noborder = {
+          #   value = true;
+          #   apply = "force";
+          # };
           # `apply` defaults to "apply-initially"
           maximizehoriz = true;
           maximizevert = true;
@@ -229,13 +244,14 @@
 
     powerdevil = {
       AC = {
+        powerProfile = "performance";
         powerButtonAction = "lockScreen";
         autoSuspend = {
-          action = "shutDown";
-          idleTimeout = 1000;
+          action = "sleep";
+          idleTimeout = 600000;
         };
         turnOffDisplay = {
-          idleTimeout = 1000;
+          idleTimeout = 1200;
           idleTimeoutWhenLocked = "immediately";
         };
       };
@@ -250,7 +266,7 @@
 
     kwin = {
       edgeBarrier = 0; # Disables the edge-barriers introduced in plasma 6.1
-      cornerBarrier = false;
+      cornerBarrier = true;
     };
 
     kscreenlocker = {
@@ -285,7 +301,7 @@
       baloofilerc."Basic Settings"."Indexing-Enabled" = false;
       kwinrc."org.kde.kdecoration2".ButtonsOnLeft = "SF";
       kwinrc.Desktops.Number = {
-        value = 8;
+        value = 1;
         # Forces kde to not change this value (even through the settings app).
         immutable = true;
       };

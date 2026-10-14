@@ -131,6 +131,22 @@
         icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
         definedAliases = ["@nx"];
       };
+      nixpkgs = {
+        name = "nixpkgs";
+        urls = [
+          {
+            template = "https://search.nixos.org/packages?query={searchTerms}";
+            params = [
+              {
+                name = "query";
+                value = "searchTerms";
+              }
+            ];
+          }
+        ];
+        icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+        definedAliases = ["@pkgs"];
+      };
       noaiddg = {
         name = "No AI DuckDuckGo";
         urls = [
