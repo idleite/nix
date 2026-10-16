@@ -37,11 +37,11 @@
 
       default = inputs.self.packages.${system}.hello;
     }) inputs.nixpkgs.legacyPackages;
-    nixosConfigurations.nixos = inputs.nixpkgs.lib.nixosSystem {
+    nixosConfigurations.elisa = inputs.nixpkgs.lib.nixosSystem {
       system = "x86_64-linux"; 
       specialArgs = { inherit inputs; }; 
       modules = [
-	      ../hardware-configuration.nix
+	      ../hardware-configuration-elisa.nix
         ../configuration.nix
         # ../zen.nix
         inputs.home-manager.nixosModules.home-manager {
