@@ -7,22 +7,15 @@
 {
   imports =
     [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
+      # ./hardware-configuration.nix
       ./desktop.nix
       # ./zen.nix
     #  ./home.nix
     ];
 
-  # Use the GRUB 2 boot loader.
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
-  boot.loader.grub.useOSProber = true;
-  virtualisation.docker.enable = true;
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  networking.hostName = "elisa"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -81,42 +74,42 @@
     wireplumber.enable = true;
   };
   hardware.alsa.enablePersistence = true;
-services.pipewire.wireplumber.extraConfig."50-app-routing" = {
-  "wireplumber.settings" = {
-    # Keeps custom application routes saved permanently across restarts
-    "state.restore-props" = true;
-  };
-  "node.rules" = [
-    {
-      matches = [
-        {
-          # Match by the application's binary or process name
-          "app.name" = "spotify"; 
-        }
-      ];
-      actions = {
-        update-props = {
-          # Force WirePlumber to send this app to your chosen output
-          "target.node" = "alsa_output.usb-Generic_Blue_Microphones_2113BAB0P0A8-00.analog-stereo";
-        };
-      };
-    }
-        {
-      matches = [
-        {
-          # Match by the application's binary or process name
-          "app.name" = "spotifyd"; 
-        }
-      ];
-      actions = {
-        update-props = {
-          # Force WirePlumber to send this app to your chosen output
-          "target.node" = "alsa_output.pci-0000_08_00.4.analog-stereo";
-        };
-      };
-    }
-  ];
-};
+# services.pipewire.wireplumber.extraConfig."50-app-routing" = {
+#   "wireplumber.settings" = {
+#     # Keeps custom application routes saved permanently across restarts
+#     "state.restore-props" = true;
+#   };
+#   "node.rules" = [
+#     {
+#       matches = [
+#         {
+#           # Match by the application's binary or process name
+#           "app.name" = "spotify"; 
+#         }
+#       ];
+#       actions = {
+#         update-props = {
+#           # Force WirePlumber to send this app to your chosen output
+#           "target.node" = "alsa_output.usb-Generic_Blue_Microphones_2113BAB0P0A8-00.analog-stereo";
+#         };
+#       };
+#     }
+#         {
+#       matches = [
+#         {
+#           # Match by the application's binary or process name
+#           "app.name" = "spotifyd"; 
+#         }
+#       ];
+#       actions = {
+#         update-props = {
+#           # Force WirePlumber to send this app to your chosen output
+#           "target.node" = "alsa_output.pci-0000_08_00.4.analog-stereo";
+#         };
+#       };
+#     }
+#   ];
+# };
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
   security.tpm2.enable = true;

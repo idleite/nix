@@ -43,6 +43,8 @@
       modules = [
 	      ../hardware-configuration-elisa.nix
         ../configuration.nix
+        ../bootloader-elisa.nix
+        ../assorted-elisa.nix
         # ../zen.nix
         inputs.home-manager.nixosModules.home-manager {
           home-manager.extraSpecialArgs = { inherit inputs; };
