@@ -172,6 +172,15 @@
         ];
         definedAliases = ["@gh"];
       };
+      artifacthub = {
+        name = "Artifact Hub";
+        urls = [
+          {
+            template = "https://artifacthub.io/packages/search?ts_query_web={searchTerms}";
+          }
+        ];
+        definedAliases = ["@ah"];
+      };
     };
   };
 }

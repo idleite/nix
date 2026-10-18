@@ -71,9 +71,9 @@
 
 
     # Use the WirePlumber session manager
-    wireplumber.enable = true;
+    # wireplumber.enable = true;
   };
-  hardware.alsa.enablePersistence = true;
+  # hardware.alsa.enablePersistence = true;
 # services.pipewire.wireplumber.extraConfig."50-app-routing" = {
 #   "wireplumber.settings" = {
 #     # Keeps custom application routes saved permanently across restarts

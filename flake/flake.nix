@@ -19,7 +19,7 @@
       };
     };
     nixpkgs.url = "github:nixos/nixpkgs?ref=release-26.05";
-
+    unifi-os-server.url = "github:rcambrj/unifi-os-server";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -45,6 +45,7 @@
         ../configuration.nix
         ../bootloader-elisa.nix
         ../assorted-elisa.nix
+        ../unifi-elisa.nix
         # ../zen.nix
         inputs.home-manager.nixosModules.home-manager {
           home-manager.extraSpecialArgs = { inherit inputs; };
