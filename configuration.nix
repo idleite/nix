@@ -129,8 +129,9 @@
     KERNEL=="uhid", SUBSYSTEM=="misc", GROUP="tpm_uhid", MODE="0660"
   '';
   environment.systemPackages = [
-   pkgs.pulsemeeter
-    pkgs.spotify
+    pkgs.pulsemeeter
+    inputs.spotifast.packages."${pkgs.stdenv.hostPlatform.system}".default
+    # pkgs.spotify
     # pkgs.spotifyd
     pkgs.tmux
     pkgs.bitwarden-desktop
@@ -143,11 +144,11 @@
     pkgs.talosctl
     pkgs.fluxcd
     pkgs.git
-   pkgs.pulseaudio
+    pkgs.pulseaudio
     inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.hello
     pkgs.pavucontrol 
     pkgs.alsa-utils
-   pkgs.qpwgraph
+    pkgs.qpwgraph
     pkgs.pamixer
     pkgs.bluez
     pkgs.bluez-tools
@@ -168,7 +169,7 @@
     pkgs.k9s
     pkgs.xclicker
     pkgs.wineWow64Packages.stable
-
+    pkgs.istioctl
     # pkgs.tailscale
     ];
   services.tailscale = {

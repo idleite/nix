@@ -96,7 +96,7 @@
                 "applications:zen-beta.desktop"
                 "applications:code.desktop"
                 "applications:discord.desktop"
-                "applications:spotify.desktop"
+                "applications:spotifast.desktop"
               ];
             };
           }

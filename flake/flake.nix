@@ -2,6 +2,7 @@
   description = "A very basic flake";
 
   inputs = {
+    spotifast.url = "github:crmne/spotifast";
     prismlauncher = {
       url = "github:PrismLauncher/PrismLauncher";
 
@@ -19,7 +20,7 @@
       };
     };
     nixpkgs.url = "github:nixos/nixpkgs?ref=release-26.05";
-    unifi-os-server.url = "github:rcambrj/unifi-os-server";
+    # unifi-os-server.url = "github:rcambrj/unifi-os-server";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -41,11 +42,12 @@
       system = "x86_64-linux"; 
       specialArgs = { inherit inputs; }; 
       modules = [
+        # inputs.unifi-os-server.nixosModules.unifi-os-server
 	      ../hardware-configuration-elisa.nix
         ../configuration.nix
         ../bootloader-elisa.nix
         ../assorted-elisa.nix
-        ../unifi-elisa.nix
+        # ../unifi-elisa.nix
         # ../zen.nix
         inputs.home-manager.nixosModules.home-manager {
           home-manager.extraSpecialArgs = { inherit inputs; };
