@@ -38,6 +38,24 @@
 
       default = inputs.self.packages.${system}.hello;
     }) inputs.nixpkgs.legacyPackages;
+    nixosConfigurations.angelica = inputs.nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux"; 
+      specialArgs = { inherit inputs; }; 
+      modules = [
+	      ../hardware-configuration-angelica.nix
+        ../configuration.nix
+        ../bootloader-angelica.nix
+        ../assorted-angelica.nix
+
+        inputs.home-manager.nixosModules.home-manager {
+          home-manager.extraSpecialArgs = { inherit inputs; };
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.sharedModules = [ inputs.plasma-manager.homeModules.plasma-manager ];
+          home-manager.users.harry = import ../home.nix;
+        }
+      ];
+    };
     nixosConfigurations.elisa = inputs.nixpkgs.lib.nixosSystem {
       system = "x86_64-linux"; 
       specialArgs = { inherit inputs; }; 
