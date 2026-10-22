@@ -176,6 +176,7 @@
     # Enable tailscale at startup
     enable = true;
   };
+    programs.direnv.enable = true;
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
