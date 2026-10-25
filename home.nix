@@ -13,10 +13,8 @@
   home.stateVersion = "25.05"; 
 
   # Packages to install for this user
-  home.packages = with pkgs; [
-    git
-    htop
-  ];
+  # home.packages = with pkgs; [
+  # ];
   services.spotifyd = {
     enable = true;
     settings = {
@@ -30,9 +28,6 @@
     initExtra = ''
     eval "$(devenv hook bash)"
     '';
-    # bashrcExtra = ''
-    #   . ~/oldbashrc
-    # '';
   };
   programs.ssh = {
   extraConfig = ''
