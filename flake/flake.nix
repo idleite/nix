@@ -46,6 +46,9 @@
         ../configuration.nix
         ../bootloader-angelica.nix
         ../assorted-angelica.nix
+        ../dev-packages.nix
+        ../system-packages.nix
+        ../game-packages.nix
 
         inputs.home-manager.nixosModules.home-manager {
           home-manager.extraSpecialArgs = { inherit inputs; };
@@ -67,6 +70,10 @@
         ../assorted-elisa.nix
         # ../unifi-elisa.nix
         # ../zen.nix
+        ../dev-packages.nix
+        ../system-packages.nix
+        ../game-packages.nix
+        ../audio-packages.nix
         inputs.home-manager.nixosModules.home-manager {
           home-manager.extraSpecialArgs = { inherit inputs; };
           home-manager.useGlobalPkgs = true;
@@ -84,6 +91,7 @@
         ../configuration.nix
         ../bootloader-peggy.nix
         ../assorted-peggy.nix
+        ../system-packages.nix
         inputs.home-manager.nixosModules.home-manager {
           home-manager.extraSpecialArgs = { inherit inputs; };
           home-manager.useGlobalPkgs = true;
