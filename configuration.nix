@@ -75,38 +75,6 @@
     services.udev.extraRules = ''
     KERNEL=="uhid", SUBSYSTEM=="misc", GROUP="tpm_uhid", MODE="0660"
   '';
-  environment.systemPackages = [
-    pkgs.pulsemeeter
-    inputs.spotifast.packages."${pkgs.stdenv.hostPlatform.system}".default
-    pkgs.pulseaudio
-    pkgs.pavucontrol 
-    pkgs.alsa-utils
-    pkgs.qpwgraph
-    pkgs.pamixer
-
-    pkgs.bluez
-    pkgs.bluez-tools
-
-    pkgs.pre-commit
-    pkgs.tmux
-    pkgs.vscode
-    pkgs.neovim
-    pkgs.git
-    pkgs.git-credential-manager
-    pkgs.devenv
-
-    pkgs.heroic
-    pkgs.steam
-    inputs.prismlauncher.packages.${pkgs.system}.prismlauncher
-
-    pkgs.bitwarden-desktop
-    pkgs.discord
-    pkgs.karere
-    pkgs.twinkle
-    pkgs.wineWow64Packages.stable
-    pkgs.tpm-fido
-    pkgs.pinentry-qt
-    ];
   services.tailscale = {
     enable = true;
   };
