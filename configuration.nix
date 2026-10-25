@@ -73,43 +73,8 @@
     # Use the WirePlumber session manager
     # wireplumber.enable = true;
   };
-  # hardware.alsa.enablePersistence = true;
-# services.pipewire.wireplumber.extraConfig."50-app-routing" = {
-#   "wireplumber.settings" = {
-#     # Keeps custom application routes saved permanently across restarts
-#     "state.restore-props" = true;
-#   };
-#   "node.rules" = [
-#     {
-#       matches = [
-#         {
-#           # Match by the application's binary or process name
-#           "app.name" = "spotify"; 
-#         }
-#       ];
-#       actions = {
-#         update-props = {
-#           # Force WirePlumber to send this app to your chosen output
-#           "target.node" = "alsa_output.usb-Generic_Blue_Microphones_2113BAB0P0A8-00.analog-stereo";
-#         };
-#       };
-#     }
-#         {
-#       matches = [
-#         {
-#           # Match by the application's binary or process name
-#           "app.name" = "spotifyd"; 
-#         }
-#       ];
-#       actions = {
-#         update-props = {
-#           # Force WirePlumber to send this app to your chosen output
-#           "target.node" = "alsa_output.pci-0000_08_00.4.analog-stereo";
-#         };
-#       };
-#     }
-#   ];
-# };
+  hardware.alsa.enablePersistence = true;
+
   # Enable touchpad support (enabled default in most desktopManager).
   # services.libinput.enable = true;
   security.tpm2.enable = true;
@@ -170,6 +135,7 @@
     pkgs.xclicker
     pkgs.wineWow64Packages.stable
     pkgs.istioctl
+    pkgs.devenv
     # pkgs.tailscale
     ];
   services.tailscale = {
