@@ -1,30 +1,26 @@
 { config, pkgs, ... }:
 
 {
-#   imports =
-#     [ # Include the results of the hardware scan.
-#       ./hardware-configuration.nix
-#     ];
+
 
   # Use the GRUB 2 boot loader.
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
-  boot.loader.grub.useOSProber = true;
+  # boot.loader.grub.enable = true;
+  # boot.loader.grub.device = "/dev/sda";
+  # boot.loader.grub.useOSProber = true;
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   networking.hostName = "exitnode"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
   networking.networkmanager.enable = true;
 
-  # Set your time zone.
+  # # Set your time zone.
   time.timeZone = "America/New_York";
 
-  # Select internationalisation properties.
+  # # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
   i18n.extraLocaleSettings = {
@@ -39,11 +35,7 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
+  nix.settings.trusted-users = ["harry"];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users."harry" = {
@@ -52,54 +44,58 @@
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [];
   };
+  networking = {
+    nameservers = [ "1.1.1.1" "1.0.0.1"];
+    networkmanager.dns = "none";
+    interfaces.ens18 = {
+      ipv4.addresses = [{
+        address = "10.20.1.11";
+        prefixLength = 16;
+      }];
+    };
+    defaultGateway = {
+      address = "10.20.1.0";
+      interface = "ens18";
+    };
 
+  };
+  services.tailscale = {
+    # Enable tailscale at startup
+    enable = true;
+    # authKeyParameters.baseURL = "https://headscale.harryesses.com";
+    extraUpFlags = [ 
+      "--login-server=https://headscale.harryesses.com"
+      "-reset"
+      "--advertise-exit-node=true"
+      "--advertise-routes=10.20.0.0/16"
+
+    ];
+    useRoutingFeatures = "server";
+    # If you would like to use a preauthorized key, set
+    authKeyFile = "/home/harry/headscale_key";
+    # Note: maximum expire time is 90 days
+  };
+  services.networkd-dispatcher = {
+    enable = true;
+    rules."50-tailscale-optimizations" = {
+      onState = [ "routable" ];
+      script = ''
+        ${pkgs.ethtool}/bin/ethtool -K ens18 rx-udp-gro-forwarding on rx-gro-list off
+      '';
+    };
+  };
   # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfree = false;
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).
-  # environment.systemPackages = with pkgs; [
-  #   vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #   wget
-  # ];
+  environment.systemPackages = with pkgs; [
+    ethtool
+  ];
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
 
-  # List services that you want to enable:
 
-  # Enable the OpenSSH daemon.
 
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  # Copy the NixOS configuration file and link it from the resulting system
-  # (/run/current-system/configuration.nix). This is useful in case you
-  # accidentally delete configuration.nix.
-  # system.copySystemConfiguration = true;
-
-  # This option defines the first version of NixOS you have installed on this particular machine,
-  # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.
-  #
-  # Most users should NEVER change this value after the initial install, for any reason,
-  # even if you've upgraded your system to a new NixOS release.
-  #
-  # This value does NOT affect the Nixpkgs version your packages and OS are pulled from,
-  # so changing it will NOT upgrade your system - see https://nixos.org/manual/nixos/stable/#sec-upgrading for how
-  # to actually do that.
-  #
-  # This value being lower than the current NixOS release does NOT mean your system is
-  # out of date, out of support, or vulnerable.
-  #
-  # Do NOT change this value unless you have manually inspected all the changes it would make to your configuration,
-  # and migrated your data accordingly.
-  #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   system.stateVersion = "26.05"; # Did you read the comment?
 

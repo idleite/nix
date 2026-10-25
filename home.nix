@@ -25,6 +25,44 @@
       };
     };
   };
+  programs.bash = {
+    enable = true;
+    initExtra = ''
+    eval "$(devenv hook bash)"
+    '';
+    # bashrcExtra = ''
+    #   . ~/oldbashrc
+    # '';
+  };
+  programs.ssh = {
+  extraConfig = ''
+    Host 10.20.0.2
+            HostName 10.20.0.2
+            User harry
+            Port 22
+            IdentityFile ~/.ssh/keys/hamilton
+            IdentitiesOnly Yes
+    Host 10.20.1.10
+            HostName 10.20.1.10
+            User harry
+            Port 22
+            IdentityFile ~/.ssh/keys/hamilton
+            IdentitiesOnly Yes
+    Host hamilton 
+            HostName 10.20.0.2
+            User harry
+            Port 22
+            IdentityFile ~/.ssh/keys/hamilton
+            IdentitiesOnly Yes
+    Host 10.20.1.9
+            HostName 10.20.1.9
+            User root
+            Port 22 
+            IdentityFile ~/.ssh/keys/proxmox
+            IdentitiesOnly yes
+
+  '';
+  };
   programs.thunderbird.enable = true;
   # programs.git-credential-oauth.enable = true;
   # Let Home Manager install and manage itself

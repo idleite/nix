@@ -96,8 +96,7 @@
   environment.systemPackages = [
     pkgs.pulsemeeter
     inputs.spotifast.packages."${pkgs.stdenv.hostPlatform.system}".default
-    # pkgs.spotify
-    # pkgs.spotifyd
+    pkgs.pre-commit
     pkgs.tmux
     pkgs.bitwarden-desktop
     pkgs.discord
@@ -152,6 +151,7 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+  nix.settings.trusted-users = ["harry"];
 
   # List packages installed in system profile.
   # You can use https://search.nixos.org/ to find more packages (and options).

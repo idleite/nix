@@ -93,6 +93,21 @@
         }
       ];
     };
+    nixosConfigurations.exitnode = inputs.nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux"; 
+      specialArgs = { inherit inputs; }; 
+      modules = [
+        # inputs.unifi-os-server.nixosModules.unifi-os-server
+	      ../hardware-configuration-exitnode.nix
+        ../configuration-exitnode.nix
+        ../ssh-exitnode.nix
+        # ../bootloader-elisa.nix
+        # ../assorted-elisa.nix
+        # ../unifi-elisa.nix
+        # ../zen.nix
+
+      ];
+    };
 #  environment.systemPackages = [
 #    inputs.self.hello
 #  ];
